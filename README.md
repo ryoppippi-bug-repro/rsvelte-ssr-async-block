@@ -1,13 +1,17 @@
 # rsvelte: SSR drops `$$renderer.async_block` around a component that reads an async `{const}`
 
-Reproduction for a server-side rendering (SSR) bug in
-[rsvelte](https://github.com/baseballyama/rsvelte) 0.5.3
+Reproduction for [baseballyama/rsvelte#4778](https://github.com/baseballyama/rsvelte/issues/4778):
+a server-side rendering (SSR) bug in [rsvelte](https://github.com/baseballyama/rsvelte) 0.5.3
 (`@rsvelte/vite-plugin-svelte` 0.5.3, `@rsvelte/vite-plugin-svelte-native` 0.3.17).
+
+## Steps
+
+Needs Node.js and pnpm (pinned in `packageManager`); nothing global beyond that.
 
 ```sh
 pnpm install
-pnpm run repro           # rsvelte: TypeError: v is not a function
-pnpm run repro:official  # @sveltejs/vite-plugin-svelte: renders fine
+pnpm run repro           # rsvelte
+pnpm run repro:official  # @sveltejs/vite-plugin-svelte, for comparison
 ```
 
 `src/App.svelte` reads a `{const … = $derived(await …)}` value as a prop of a child component:
@@ -20,8 +24,15 @@ pnpm run repro:official  # @sveltejs/vite-plugin-svelte: renders fine
 </svelte:boundary>
 ```
 
-`pnpm run show` and `pnpm run show:official` print the generated server code. The official
-compiler wraps the `Child` call so it waits for `promises[1]` (the `v` derived):
+## Expected
+
+Both plugins render the component, as `pnpm run repro:official` does:
+
+```html
+<span data-value="42"><!---->42<!----></span>
+```
+
+The official compiler wraps the `Child` call so it waits for `promises[1]` (the `v` derived):
 
 ```js
 $$renderer.async_block([promises[1]], ($$renderer) => {
@@ -29,13 +40,17 @@ $$renderer.async_block([promises[1]], ($$renderer) => {
 });
 ```
 
-rsvelte emits the call without that wrapper, so `v().n` runs before the `run([...])` step
-has assigned `v`:
+## Actual
+
+`pnpm run repro` throws, because rsvelte emits the call without that wrapper and `v().n` runs
+before the `run([...])` step has assigned `v`:
 
 ```
 TypeError: v is not a function
     at App (src/App.svelte:25:11)
 ```
+
+`pnpm run show` and `pnpm run show:official` print the generated server code of each.
 
 ## Analysis
 

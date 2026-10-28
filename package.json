@@ -14,5 +14,6 @@
     "svelte": "5.57.2",
     "vite": "8.3.4"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "pnpm@12.9.0"
 }
