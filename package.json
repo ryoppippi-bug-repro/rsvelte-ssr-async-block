@@ -1,0 +1,17 @@
+{
+  "name": "rsvelte-ssr-async-block",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "repro": "node repro.js",
+    "repro:official": "PLUGIN=official node repro.js",
+    "show": "node show.js",
+    "show:official": "PLUGIN=official node show.js"
+  },
+  "devDependencies": {
+    "@rsvelte/vite-plugin-svelte": "0.5.3",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "svelte": "5.57.2",
+    "vite": "8.3.4"
+  }
+}
