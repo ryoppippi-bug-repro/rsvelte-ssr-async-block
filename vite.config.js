@@ -1,10 +1,10 @@
 import { defineConfig } from "vite";
 
-// `PLUGIN=official` swaps in the reference plugin so the same component can be compared.
+// The official plugin is the default; `RSVELTE=1` swaps in rsvelte for the same component.
 const { svelte } =
-  process.env.PLUGIN === "official"
-    ? await import("@sveltejs/vite-plugin-svelte")
-    : await import("@rsvelte/vite-plugin-svelte");
+  process.env.RSVELTE === "1"
+    ? await import("@rsvelte/vite-plugin-svelte")
+    : await import("@sveltejs/vite-plugin-svelte");
 
 export default defineConfig({
   plugins: [svelte({ compilerOptions: { dev: false, experimental: { async: true } } })],

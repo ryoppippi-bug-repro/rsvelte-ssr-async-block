@@ -37,4 +37,7 @@ TypeError: v is not a function
     at App (src/App.svelte:25:11)
 ```
 
+`vite.config.js` picks the plugin from the environment: `RSVELTE=1` loads rsvelte, anything else
+the official plugin. The `repro` and `show` scripts set it; the `:official` ones do not.
+
 Versions: Svelte 5.57.2, Vite 8.3.4, `experimental.async: true`, `dev: false`.

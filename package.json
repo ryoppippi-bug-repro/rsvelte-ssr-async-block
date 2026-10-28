@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "repro": "node repro.js",
-    "repro:official": "PLUGIN=official node repro.js",
-    "show": "node show.js",
-    "show:official": "PLUGIN=official node show.js"
+    "repro": "RSVELTE=1 node repro.js",
+    "repro:official": "node repro.js",
+    "show": "RSVELTE=1 node show.js",
+    "show:official": "node show.js"
   },
   "devDependencies": {
     "@rsvelte/vite-plugin-svelte": "0.5.3",
