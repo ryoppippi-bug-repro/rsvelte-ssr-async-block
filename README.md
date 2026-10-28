@@ -57,6 +57,22 @@ What the evidence in this repository shows:
 - Only the missing wrapper differs between the official and rsvelte output (`pnpm run show` vs `pnpm run show:official`).
 - Dropping the `{const}` and reading the value from a `<script>`-level `await` instead is not covered here, so I do not know whether that case works.
 
+## How it was found
+
+I found it in a SvelteKit app, not in plain Vite. I replaced `@sveltejs/vite-plugin-svelte` with `@rsvelte/vite-plugin-svelte` through a package-manager override, as the rsvelte README describes for SvelteKit:
+
+```yaml
+overrides:
+  "@sveltejs/vite-plugin-svelte": npm:@rsvelte/vite-plugin-svelte@^0.5.3
+```
+
+- `@sveltejs/kit` 3.0.1, Svelte 5.57.2, Vite 8.3.4, `experimental.async: true`.
+- Typecheck, the production build and the unit tests all passed.
+- Rendering the home page in `vite dev` returned a 500 with `TypeError: v is not a function`. The same app with the official plugin returned 200.
+- The failing component is a `{const h = $derived(await …)}` / `{const v = $derived(h.vitals)}` pair inside `<svelte:boundary>`, where `v` is passed as a prop to child components.
+
+SvelteKit is not needed to reproduce it. The reduced case in this repository uses plain Vite and `svelte/server`.
+
 ## Files
 
 `vite.config.js` picks the plugin from the environment: `RSVELTE=1` loads rsvelte, anything else
